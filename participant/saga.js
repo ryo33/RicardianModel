@@ -1,9 +1,10 @@
 import { put, take, call, select, fork, race } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 
-import { fetchContents, updateG1, updateG2, changeProposal } from './actions'
+import { fetchContents, updateG1, updateG2, changeProposal,
+  switchGoods, changeGoods, propose } from './actions'
 
-const INTERVAL = 100 // ten per a second
+const INTERVAL = 100 // ten times per a second
 
 function* fetchContentsSaga() {
   while (true) {
@@ -40,10 +41,29 @@ function* watchProposal(action, num) {
   }
 }
 
+function* changeGoodsSaga() {
+  while (true) {
+    yield take(`${switchGoods}`)
+    const goods = yield select(({ selling }) => selling)
+    const newGoods = goods == 1 ? 2 : 1
+    yield call(sendData, 'change goods', newGoods)
+    yield put(changeGoods(newGoods))
+  }
+}
+
+function* proposeSaga() {
+  while (true) {
+    const { payload } = yield take(`${propose}`)
+    yield call(sendData, 'propose', payload)
+  }
+}
+
 function* saga() {
   yield fork(fetchContentsSaga)
   yield fork(watchProposal, `${updateG1}`, 1)
   yield fork(watchProposal, `${updateG2}`, 2)
+  yield fork(changeGoodsSaga)
+  yield fork(proposeSaga)
 }
 
 export default saga

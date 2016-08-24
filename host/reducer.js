@@ -13,6 +13,16 @@ const reducer = concatenateReducers([
     'matched': (_, { payload: { participants, groups } }) => ({
       participants, groups, investmentLog: []
     }),
+    'proposed': ({ groups }, { payload: { groupID, state, g1proposal, g2proposal } }) => {
+      const newGroups = Object.assign({}, groups, {
+        [groupID]: Object.assign({}, groups[groupID], {
+          state, g1proposal, g2proposal
+        })
+      })
+      return {
+        groups: newGroups
+      }
+    },
   }, {}),
   handleAction('update contents', () => ({ loading: false }), { loading: true })
 ])

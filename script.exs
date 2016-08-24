@@ -43,9 +43,9 @@ defmodule RicardianModel do
     Logger.debug("[RicardianModel] #{action} #{inspect params}")
     result = case {action, params} do
       {"fetch contents", _} -> Participant.fetch_contents(data, id)
-      {"propose", %{"g1" => g1, "g2" => g2}} -> Participant.propose(data, id, g1, g2)
-      {"update proposal", payload} ->
-        Participant.update_proposal(data, id, payload)
+      {"propose", %{"goods" => goods, "g1" => g1, "g2" => g2}} -> Participant.propose(data, id, goods, g1, g2)
+      {"update proposal", payload} -> Participant.update_proposal(data, id, payload)
+      {"change goods", new} -> Participant.change_goods(data, id, new)
     end
     wrap_result(result)
   end

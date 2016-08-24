@@ -16,10 +16,7 @@ defmodule RicardianModel.Actions do
   def update_proposal(data, id, payload) do
     group_id = get_in(data, [:participants, id, :group])
     group = get_in(data, [:groups, group_id])
-    target = case group do
-      %{u1: ^id, u2: target} -> target
-      %{u2: ^id, u1: target} -> target
-    end
+    target = Main.get_pair(group, id)
     format(data, nil, dispatch_to(target, get_action("change proposal", payload)))
   end
 
@@ -31,15 +28,14 @@ defmodule RicardianModel.Actions do
       "g1proposal" => group.g1proposal,
       "g2proposal" => group.g2proposal,
     })
-    target = case group do
-      %{u1: ^id, u2: target} -> target
-      %{u2: ^id, u1: target} -> target
-    end
+    target = Main.get_pair(group, id)
     participant = dispatch_to(target, get_action("proposed", %{
       "state" => group.state,
+      "selling" => group.selling,
       "g1proposal" => group.g1proposal,
       "g2proposal" => group.g2proposal,
     }))
+    |> dispatch_to(id, get_action("change state", group.state))
     format(data, host, participant)
   end
 
@@ -65,6 +61,14 @@ defmodule RicardianModel.Actions do
       {id, %{action: get_action("matched", payload)}}
     end) |> Enum.into(%{})
     format(data, host, participant)
+  end
+
+  def change_goods(data, id, group_id) do
+    group = Participant.get_group(data, group_id)
+    action = get_action("change goods", group.selling)
+    target = Main.get_pair(group, id)
+    participant = dispatch_to(target, action)
+    format(data, nil, participant)
   end
 
   # Utilities

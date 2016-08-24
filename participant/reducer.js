@@ -1,7 +1,7 @@
 import concatenateReducers from 'redux-concatenate-reducers'
 import { handleAction, handleActions } from 'redux-actions'
 
-import { changePage } from './actions'
+import { changePage, changeGoods } from './actions'
 
 const reducer = concatenateReducers([
   handleActions({
@@ -19,7 +19,10 @@ const reducer = concatenateReducers([
             g2proposal: value
           }
       }
-    }
+    },
+    'proposed': (_, { payload }) => payload,
+    'change state': (_, { payload }) => ({ state: payload }),
+    [changeGoods]: (_, { payload }) => ({ selling: payload })
   }, {}),
   handleAction('update contents', () => ({ loading: false }), { loading: true })
 ])

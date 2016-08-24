@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import ProposalForm from './ProposalForm'
-import WaitingProposal from './WaitingProposal'
 import AnswerForm from './AnswerForm'
 import WaitingAnswer from './WaitingAnswer'
 
@@ -23,10 +22,10 @@ const Experiment = ({
   } else {
     if ((state == 'u1thinking' && role == 'u1') || (state == 'u2thinking' && role == 'u2')) {
       // Thinking
-      return <ProposalForm />
+      return <ProposalForm proposer={true} />
     } else if ((state == 'u1thinking' && role == 'u2') || (state == 'u2thinking' && role == 'u1')) {
       // Waiting for a proposal
-      return <WaitingProposal />
+      return <ProposalForm proposer={false} />
     } else if ((state == 'u1proposed' && role == 'u1') || (state == 'u2proposed' && role == 'u2')) {
       // Be Proposed
       return <AnswerForm />

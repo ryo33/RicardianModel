@@ -11,7 +11,7 @@ defmodule RicardianModel.Participant do
     |> Actions.update_proposal(id, payload)
   end
 
-  def propose(data, id, g1, g2) do
+  def propose(data, id, goods, g1, g2) do
     group_id = get_in(data, [:participants, id, :group])
     data
     |> update_in([:groups, group_id], fn group ->
@@ -19,12 +19,14 @@ defmodule RicardianModel.Participant do
         "u1thinking" ->
           %{ group |
             state: "u1proposed",
+            selling: goods,
             g1proposal: g1,
             g2proposal: g2,
           }
         "u2thinking" ->
           %{ group |
             state: "u2proposed",
+            selling: goods,
             g1proposal: g1,
             g2proposal: g2,
           }
@@ -33,7 +35,34 @@ defmodule RicardianModel.Participant do
     |> Actions.proposed(id, group_id)
   end
 
+  def change_goods(data, id, new) do
+    group_id = get_group_id(data, id)
+    data
+    |> update_in([:groups, group_id], fn group ->
+      %{ group |
+        selling: new
+      }
+    end)
+    |> Actions.change_goods(id, group_id)
+  end
+
   # Utilities
+  def get_participant(data, id) do
+    get_in(data, [:participants, id])
+  end
+
+  def get_group(data, id) do
+    get_in(data, [:groups, id])
+  end
+
+  def get_group_id(data, id) do
+    get_in(data, [:participants, id, :group])
+  end
+
+  def get_group_from_participant(data, id) do
+    group_id = get_group_id(data, id)
+    get_group(data, group_id)
+  end
 
   def format_group(data, group, id) do
     %{participants: participants} = data
@@ -44,7 +73,7 @@ defmodule RicardianModel.Participant do
       round: group.round,
       state: group.state,
       selling: group.selling,
-      pair: Map.get(participants, (if group.u1 == id, do: group.u2, else: id))
+      pair: Map.get(participants, (if group.u1 == id, do: group.u2, else: group.u1))
     }
   end
 

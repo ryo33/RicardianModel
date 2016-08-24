@@ -37,7 +37,7 @@ defmodule RicardianModel.Main do
       state: "u1thinking",
       g1proposal: 0,
       g2proposal: 0,
-      selling: 1
+      selling: Enum.random(1..2)
     }
   end
 
@@ -54,6 +54,13 @@ defmodule RicardianModel.Main do
   def generate_country(data) do
     %{money: money_range, g1rate: g1rate_range, g2rate: g2rate_range} = data
     {Enum.random(money_range), Enum.random(g1rate_range), Enum.random(g2rate_range)}
+  end
+
+  def get_pair(group, id) do
+    case group do
+      %{u1: ^id, u2: target} -> target
+      %{u2: ^id, u1: target} -> target
+    end
   end
 
   def wrap(data) do
