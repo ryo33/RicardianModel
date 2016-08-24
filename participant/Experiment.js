@@ -28,10 +28,10 @@ const Experiment = ({
       return <ProposalForm proposer={false} />
     } else if ((state == 'u1proposed' && role == 'u1') || (state == 'u2proposed' && role == 'u2')) {
       // Be Proposed
-      return <AnswerForm />
+      return <WaitingAnswer />
     } else if ((state == 'u1proposed' && role == 'u2') || (state == 'u2proposed' && role == 'u1')) {
       // Waiting for an answer
-      return <WaitingAnswer />
+      return <AnswerForm />
     }
   }
 }
