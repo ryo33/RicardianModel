@@ -6,8 +6,10 @@ import { fetchContents } from './actions'
 
 import PageButtons from './PageButtons'
 import MatchingButton from './MatchingButton'
+import Information from './Information'
 
-const mapStateToProps = ({}) => ({
+const mapStateToProps = ({ loading }) => ({
+  loading
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -28,14 +30,15 @@ class App extends Component {
   render() {
     const { loading } = this.props
     if (loading) {
-      <p>ロード中です</p>
+      return <p>ロード中です</p>
     } else {
       return <div>
         <PageButtons />
         <MatchingButton />
+        <Information />
       </div>
     }
   }
 }
 
-export default connect(null, mapDispatchToProps)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(App)
