@@ -4,7 +4,7 @@ defmodule RicardianModel.Main do
   alias RicardianModel.Actions
 
   @pages ["waiting", "description", "experiment", "result"]
-  @states ["u1thinking", "u1proposed", "u2thinking", "u2proposed"]
+  @states ["u1thinking", "u1proposed", "u2thinking", "u2proposed", "finished"]
 
   def pages, do: @pages
   def states, do: @states
@@ -16,6 +16,7 @@ defmodule RicardianModel.Main do
       groups: %{},
       money: 100000..100000,
       g1rate: 1..10000,
+      rounds: 2,
       g2rate: 1..100
     }
   end

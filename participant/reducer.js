@@ -22,9 +22,23 @@ const reducer = concatenateReducers([
     },
     'proposed': (_, { payload }) => payload,
     'change state': (_, { payload }) => ({ state: payload }),
-    [changeGoods]: (_, { payload }) => ({ selling: payload })
+    'rejected': (_, { payload }) => payload,
+    'accepted': (_, { payload }) => payload,
+    [changeGoods]: (_, { payload }) => ({
+      selling: payload
+    })
   }, {}),
-  handleAction('update contents', () => ({ loading: false }), { loading: true })
+  handleAction('update contents', () => ({ loading: false }), { loading: true }),
+  handleActions({
+    [changeGoods]: () => ({
+      g1proposal: 0,
+      g2proposal: 0
+    }),
+    'accepted': () => ({
+      g1proposal: 0,
+      g2proposal: 0
+    }),
+  }, {})
 ])
 
 export default reducer

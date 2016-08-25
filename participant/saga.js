@@ -60,17 +60,10 @@ function* proposeSaga() {
   }
 }
 
-function* answerSaga() {
+function* answerSaga(action, answer) {
   while (true) {
-    const { accept, reject } = yield race({
-      accept: take(`${accept}`),
-      reject: take(`${reject}`),
-    })
-    if (accept) {
-      yield call(sendData, 'accept')
-    } else {
-      yield call(sendData, 'reject')
-    }
+    yield take(answer)
+    yield call(sendData, answer)
   }
 }
 
@@ -80,7 +73,8 @@ function* saga() {
   yield fork(watchProposal, `${updateG2}`, 2)
   yield fork(changeGoodsSaga)
   yield fork(proposeSaga)
-  yield fork(answerSaga)
+  yield fork(answerSaga, `${accept}`, 'accept')
+  yield fork(answerSaga, `${reject}`, 'reject')
 }
 
 export default saga

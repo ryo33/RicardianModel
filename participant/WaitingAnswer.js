@@ -9,10 +9,12 @@ const mapStateToProps = ({
 
 const WaitingAnswer = ({ 
   group, state, g1rate, g2rate, g1proposal, g2proposal, role, money
-}) => (
-<div>
-
-</div>
-)
+}) => {
+  return (
+    <div>
+      <p>相手の返答を待っています。</p>
+    </div>
+  )
+}
 
 export default connect(mapStateToProps)(WaitingAnswer)

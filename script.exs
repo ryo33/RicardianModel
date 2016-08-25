@@ -46,6 +46,8 @@ defmodule RicardianModel do
       {"propose", %{"goods" => goods, "g1" => g1, "g2" => g2}} -> Participant.propose(data, id, goods, g1, g2)
       {"update proposal", payload} -> Participant.update_proposal(data, id, payload)
       {"change goods", new} -> Participant.change_goods(data, id, new)
+      {"accept", _} -> Participant.accept(data, id)
+      {"reject", _} -> Participant.reject(data, id)
     end
     wrap_result(result)
   end

@@ -24,18 +24,56 @@ defmodule RicardianModel.Actions do
     group = get_in(data, [:groups, group_id])
     host = get_action("proposed", %{
       "groupID" => group_id,
-      "state" => group.state,
-      "g1proposal" => group.g1proposal,
-      "g2proposal" => group.g2proposal,
+      state: group.state,
+      g1proposal: group.g1proposal,
+      g2proposal: group.g2proposal,
     })
     target = Main.get_pair(group, id)
     participant = dispatch_to(target, get_action("proposed", %{
-      "state" => group.state,
-      "selling" => group.selling,
-      "g1proposal" => group.g1proposal,
-      "g2proposal" => group.g2proposal,
+      state: group.state,
+      selling: group.selling,
+      g1proposal: group.g1proposal,
+      g2proposal: group.g2proposal,
     }))
     |> dispatch_to(id, get_action("change state", group.state))
+    format(data, host, participant)
+  end
+
+  def accept(data, group_id) do
+    group = get_in(data, [:groups, group_id])
+    u1money = get_in(data, [:participants, group.u1, :money])
+    u2money = get_in(data, [:participants, group.u2, :money])
+    host = get_action("accepted", %{
+      "groupID" => group_id,
+      state: group.state,
+      u1money: u1money,
+      u2money: u2money,
+      round: group.round,
+    })
+    participant = dispatch_to(group.u1, get_action("accepted", %{
+      state: group.state,
+      round: group.round,
+      money: u1money,
+      selling: group.selling
+    }))
+    |> dispatch_to(group.u2, get_action("accepted", %{
+      state: group.state,
+      round: group.round,
+      money: u2money,
+      selling: group.selling
+    }))
+    format(data, host, participant)
+  end
+
+  def reject(data, group_id) do
+    group = get_in(data, [:groups, group_id])
+    host = get_action("change state", %{
+      "groupID" => group_id,
+      state: group.state,
+    })
+    action = get_action("rejected", %{state: group.state})
+    participant = dispatch_to(group.u1, action)
+    |> dispatch_to(group.u2, action)
     format(data, host, participant)
   end
 

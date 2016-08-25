@@ -14,8 +14,8 @@ const mapStateToProps = ({
   group, pair, state, g1rate, g2rate, g1proposal, g2proposal, role, money, selling
 }, { proposer }) => ({
   group, pair, state, g1rate, g2rate, g1proposal, g2proposal, role, money, selling,
-  g1max: Math.trunc(Math.min(money / g1rate, pair.money / pair.g1rate)),
-  g2max: Math.trunc(Math.min(money / g2rate, pair.money / pair.g2rate)),
+  g1max: Math.trunc(proposer == (selling == 1) ? money / g1rate : pair.money / pair.g1rate),
+  g2max: Math.trunc(proposer == (selling == 2) ? money / g2rate : pair.money / pair.g2rate),
   gain: calculateGain(proposer, selling, g1proposal, g1rate, g2proposal, g2rate),
   g1reversed: (proposer && selling == 2) || (!proposer && selling == 1),
   g2reversed: (proposer && selling == 1) || (!proposer && selling == 2),
@@ -57,8 +57,37 @@ const styles = {
     float: "left",
     textAlign: "center",
     margin: "0px"
+  },
+  increase: {
+    color: "#2b2"
+  },
+  decrease: {
+    color: "#b22"
   }
 }
+
+function renderGain(gain) {
+  if (gain == 0) {
+    return <span>±0</span>
+  } else if (gain > 0) {
+    return <span style={styles.increase}>+{gain}</span>
+  } else {
+    return <span style={styles.decrease}>{gain}</span>
+  }
+}
+
+const Gain = ({ style, money, gain }) => (
+  <div style={style}>
+    <p>
+      あなたの所持金<strong>{money}</strong>
+      <span style={{margin: "0% 1%"}}>→</span>
+      <strong><strong>{money + gain}</strong></strong>
+      <span style={{margin: "0% 1%"}}>(</span>
+      <strong><strong>{renderGain(gain)}</strong></strong>
+      <span style={{margin: "0% 1%"}}>)</span>
+    </p>
+  </div>
+)
 
 class ProposalForm extends Component {
   constructor(props, context) {
@@ -187,7 +216,11 @@ class ProposalForm extends Component {
             style={g2reversed ? styles.min : styles.max}
           >{g2max + " (" + (selling == 2 ? "輸出量" : "輸入量") + ")"}</p>
         </div>
-        <p style={{clear: "both"}}>あなたの利得は<strong>{gain}</strong>です。</p>
+        <Gain
+          style={{clear: "both"}}
+          money={money}
+          gain={gain}
+        />
         {
           proposer
             ? <RaisedButton

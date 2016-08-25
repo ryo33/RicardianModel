@@ -35,6 +35,80 @@ defmodule RicardianModel.Participant do
     |> Actions.proposed(id, group_id)
   end
 
+  def accept(data, id) do
+    group_id = get_group_id(data, id)
+    %{
+      g1proposal: g1proposal,
+      g2proposal: g2proposal,
+    } = group = get_group(data, group_id)
+
+
+    # Only accepts the cases matches the situation
+    case get_group(data, group_id) do
+      %{u1: ^id, state: "u2proposed"} -> nil
+      %{u2: ^id, state: "u1proposed"} -> nil
+    end
+
+    updater = fn participant, state ->
+      gain = (if group.state == state, do: 1, else: -1)
+             * (if group.selling == 1, do: 1, else: -1)
+             * (g2proposal * participant.g2rate - g1proposal * participant.g1rate)
+      %{ participant | money: participant.money + gain }
+    end
+
+    data
+    |> update_in([:participants, group.u1], &updater.(&1, "u1proposed"))
+    |> update_in([:participants, group.u2], &updater.(&1, "u2proposed"))
+    |> update_in([:groups, group_id], fn group ->
+      case group.state do
+        "u1proposed" ->
+          %{ group |
+            state: "u2thinking"
+          }
+        "u2proposed" ->
+          finished = group.round + 1 == data.rounds
+          %{ group |
+            round: group.round + 1,
+            state: (if finished, do: "finished", else: "u1thinking")
+          }
+      end
+      |> Map.put(:g1proposal, 0)
+      |> Map.put(:g2proposal, 0)
+      |> Map.update!(:selling, fn selling ->
+        case selling do
+          1 -> 2
+          2 -> 1
+        end
+      end)
+    end)
+    |> Actions.accept(group_id)
+  end
+
+  def reject(data, id) do
+    group_id = get_group_id(data, id)
+
+    # Only accepts the cases matches the situation
+    case get_group(data, group_id) do
+      %{u1: ^id, state: "u2proposed"} -> nil
+      %{u2: ^id, state: "u1proposed"} -> nil
+    end
+
+    data
+    |> update_in([:groups, group_id], fn group ->
+      case group.state do
+        "u1proposed" ->
+          %{ group |
+            state: "u1thinking"
+          }
+        "u2proposed" ->
+          %{ group |
+            state: "u2thinking"
+          }
+      end
+    end)
+    |> Actions.reject(group_id)
+  end
+
   def change_goods(data, id, new) do
     group_id = get_group_id(data, id)
     data

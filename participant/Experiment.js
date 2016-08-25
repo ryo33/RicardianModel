@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import ProposalForm from './ProposalForm'
 import AnswerForm from './AnswerForm'
 import WaitingAnswer from './WaitingAnswer'
+import Finished from './Finished'
 
 const mapStateToProps = ({
   group, state, g1rate, g2rate, g1proposal, g2proposal, role
@@ -32,6 +33,8 @@ const Experiment = ({
     } else if ((state == 'u1proposed' && role == 'u2') || (state == 'u2proposed' && role == 'u1')) {
       // Waiting for an answer
       return <AnswerForm />
+    } else if (state == 'finished') {
+      return <Finished />
     }
   }
 }

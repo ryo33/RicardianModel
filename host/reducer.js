@@ -23,6 +23,31 @@ const reducer = concatenateReducers([
         groups: newGroups
       }
     },
+    'change state': ({ groups }, { payload: { groupID, state } }) => {
+      return {
+        groups: Object.assign({}, groups, {
+          [groupID]: Object.assign({}, groups[groupID], { state })
+        })
+      }
+    },
+    'accepted': ({ groups, participants }, { payload: { groupID, round, state, u1money, u2money } }) => {
+      const group = groups[groupID]
+      const newGroups = Object.assign({}, groups, {
+        [groupID]: Object.assign({}, group, { state, round })
+      })
+      const newParticipants = Object.assign({}, participants, {
+        [group.u1]: Object.assign({}, participants[group.u1], {
+          money: u1money
+        }),
+        [group.u2]: Object.assign({}, participants[group.u2], {
+          money: u2money
+        }),
+      })
+      return {
+        groups: newGroups,
+        participants: newParticipants
+      }
+    },
   }, {}),
   handleAction('update contents', () => ({ loading: false }), { loading: true })
 ])
