@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import Slider from 'material-ui/Slider'
 import Chip from 'material-ui/Chip'
 import RaisedButton from 'material-ui/RaisedButton'
+import Left from 'material-ui/svg-icons/navigation/arrow-back'
+import Right from 'material-ui/svg-icons/navigation/arrow-forward'
 
 import { updateG1, updateG2, switchGoods, propose } from './actions'
 
@@ -47,7 +49,7 @@ const styles = {
     float: "right"
   },
   sliderGroup: {
-    margin: "0% 5%"
+    margin: "0% 0%"
   },
   slider: {
     clear: "both",
@@ -63,7 +65,10 @@ const styles = {
   },
   decrease: {
     color: "#b22"
-  }
+  },
+  chip: {
+    display: "inline-block",
+  },
 }
 
 function renderGain(gain) {
@@ -149,16 +154,21 @@ class ProposalForm extends Component {
             </div>
         }
         <div style={styles.sliderGroup}>
-          <Chip
+          <div
             style={{
+              display: "inline-block",
+              padding: "0%",
               position: "relative",
               left: this.calculatePosition(g1reversed, g1proposal * 100 / g1max) + "%",
               transform: "translate(-50%, 0%)",
               WebkitTransform: "translate(-50%, 0%)",
-              merginTop: "0px",
-              zIndex: 1
+              width: "auto",
             }}
-          >{g1proposal}</Chip>
+          >
+            <Chip style={styles.chip}>{"<"}</Chip>
+            <Chip style={styles.chip}>{g1proposal}</Chip>
+            <Chip style={styles.chip}>{">"}</Chip>
+          </div>
           <Slider
             axis={ g1reversed ? 'x-reverse' : 'x' }
             style={styles.slider}
