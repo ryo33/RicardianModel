@@ -4,6 +4,8 @@ export const fetchContents = createAction('fetch contents')
 
 export const updateG1 = createAction('update g1', value => value)
 export const updateG2 = createAction('update g2', value => value)
+export const addG1 = createAction('add g1', value => value)
+export const addG2 = createAction('add g2', value => value)
 export const changeProposal = createAction('change proposal', (number, value) => ({ number, value }))
 export const switchGoods = createAction('switch goods')
 export const changeGoods = createAction('change goods', goods => goods)

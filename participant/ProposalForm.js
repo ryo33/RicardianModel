@@ -8,7 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import Left from 'material-ui/svg-icons/navigation/arrow-back'
 import Right from 'material-ui/svg-icons/navigation/arrow-forward'
 
-import { updateG1, updateG2, switchGoods, propose } from './actions'
+import { updateG1, updateG2, switchGoods, propose, addG1, addG2 } from './actions'
 
 import { calculateGain } from './util'
 
@@ -24,14 +24,13 @@ const mapStateToProps = ({
 })
 
 const actionCreators = {
-  updateG1, updateG2, switchGoods, propose
+  updateG1, updateG2, switchGoods, propose, addG1, addG2
 }
 
 const styles = {
   switchGoods: {
     margin: "2% 0%",
     clear: "both",
-    float: "left",
     display: "inline-block"
   },
   sliderInner: {
@@ -81,6 +80,14 @@ function renderGain(gain) {
   }
 }
 
+const OnlyProposer = ({ proposer, children }) => {
+  if (proposer) {
+    return children
+  } else {
+    return null
+  }
+}
+
 const Gain = ({ style, money, gain }) => (
   <div style={style}>
     <p>
@@ -99,6 +106,10 @@ class ProposalForm extends Component {
     super(props, context)
     this.changeG1 = this.changeG1.bind(this)
     this.changeG2 = this.changeG2.bind(this)
+    this.incrementG1 = this.incrementG1.bind(this)
+    this.decrementG1 = this.decrementG1.bind(this)
+    this.incrementG2 = this.incrementG2.bind(this)
+    this.decrementG2 = this.decrementG2.bind(this)
     this.switchGoods = this.switchGoods.bind(this)
     this.propose = this.propose.bind(this)
   }
@@ -121,6 +132,26 @@ class ProposalForm extends Component {
   propose() {
     const { propose, selling, g1proposal, g2proposal } = this.props
     propose(selling, g1proposal, g2proposal)
+  }
+
+  incrementG1() {
+    const { addG1 } = this.props
+    addG1(1)
+  }
+
+  decrementG1() {
+    const { addG1 } = this.props
+    addG1(-1)
+  }
+
+  incrementG2() {
+    const { addG2 } = this.props
+    addG2(1)
+  }
+
+  decrementG2() {
+    const { addG2 } = this.props
+    addG2(-1)
   }
 
   calculatePosition(reversed, value) {
@@ -165,9 +196,21 @@ class ProposalForm extends Component {
               width: "auto",
             }}
           >
-            <Chip style={styles.chip}>{"<"}</Chip>
+            <OnlyProposer
+              proposer={proposer}
+              children={<Chip
+                style={styles.chip}
+                onTouchTap={g1reversed ? this.incrementG1 : this.decrementG1}
+              >{"<"}</Chip>}
+            />
             <Chip style={styles.chip}>{g1proposal}</Chip>
-            <Chip style={styles.chip}>{">"}</Chip>
+            <OnlyProposer
+              proposer={proposer}
+              children={<Chip
+                style={styles.chip}
+                onTouchTap={g1reversed ? this.decrementG1 : this.incrementG1}
+              >{">"}</Chip>}
+            />
           </div>
           <Slider
             axis={ g1reversed ? 'x-reverse' : 'x' }
@@ -197,17 +240,35 @@ class ProposalForm extends Component {
             : null
         }
         <div style={styles.sliderGroup}>
-          <Chip
+          <div
             style={{
               clear: "both",
+              display: "inline-block",
+              padding: "0%",
               position: "relative",
               left: this.calculatePosition(g2reversed, g2proposal * 100 / g2max) + "%",
               transform: "translate(-50%, 0%)",
               WebkitTransform: "translate(-50%, 0%)",
+              width: "auto",
               merginTop: "0px",
-              zIndex: 1
             }}
-          >{g2proposal}</Chip>
+          >
+            <OnlyProposer
+              proposer={proposer}
+              children={<Chip
+                style={styles.chip}
+                onTouchTap={g2reversed ? this.incrementG2 : this.decrementG2}
+              >{"<"}</Chip>}
+            />
+            <Chip style={styles.chip}>{g2proposal}</Chip>
+            <OnlyProposer
+              proposer={proposer}
+              children={<Chip
+                style={styles.chip}
+                onTouchTap={g2reversed ? this.decrementG2 : this.incrementG2}
+              >{">"}</Chip>}
+            />
+          </div>
           <Slider
             axis={ g2reversed ? 'x-reverse' : 'x' }
             style={styles.slider}

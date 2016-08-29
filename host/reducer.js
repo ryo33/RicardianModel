@@ -7,7 +7,7 @@ const reducer = concatenateReducers([
   handleActions({
     'update contents': (_, { payload }) => payload,
     [changePage]: (_, { payload }) => ({ page: payload }),
-    'join': ({ participants }, { payload: { id, participant } }) => ({
+    'join': ({ participants }, { payload: { id, user: participant } }) => ({
       participants: Object.assign({}, participants, {[id]: participant})
     }),
     'matched': (_, { payload: { participants, groups } }) => ({
