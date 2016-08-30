@@ -13,6 +13,15 @@ defmodule RicardianModel.Actions do
     format(data, nil, dispatch_to(id, action))
   end
 
+  def update_ranking(data, id) do
+    ranking = Enum.map(data.participants, fn {key, %{money: money}} ->
+      %{money: money, own: key == id}
+    end)
+    action = get_action("update ranking", ranking)
+    participant = dispatch_to(id, action)
+    format(data, nil, participant)
+  end
+
   def update_proposal(data, id, payload) do
     group_id = get_in(data, [:participants, id, :group])
     group = get_in(data, [:groups, group_id])

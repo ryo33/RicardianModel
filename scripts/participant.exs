@@ -6,6 +6,11 @@ defmodule RicardianModel.Participant do
     |> Actions.update_participant_contents(id)
   end
 
+  def fetch_ranking(data, id) do
+    data
+    |> Actions.update_ranking(id)
+  end
+
   def update_proposal(data, id, payload) do
     data
     |> Actions.update_proposal(id, payload)

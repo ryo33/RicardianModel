@@ -1,5 +1,5 @@
 import { put, take, call, select, fork, race } from 'redux-saga/effects'
-import { delay } from 'redux-saga'
+import { takeEvery, delay } from 'redux-saga'
 
 import { fetchContents, updateG1, updateG2, changeProposal,
   addG1, addG2,
@@ -8,6 +8,17 @@ import { fetchContents, updateG1, updateG2, changeProposal,
 } from './actions'
 
 const INTERVAL = 100 // ten times per a second
+
+function* fetchRankingSaga() {
+  const page = yield select(({ page }) => page)
+  if (page == 'result') {
+    yield call(sendData, 'fetch ranking')
+  }
+}
+
+function* fetchRankingWatcher(action) {
+  yield* takeEvery(action, fetchRankingSaga)
+}
 
 function* fetchContentsSaga() {
   while (true) {
@@ -91,6 +102,8 @@ function* saga() {
   yield fork(proposeSaga)
   yield fork(answerSaga, `${accept}`, 'accept')
   yield fork(answerSaga, `${reject}`, 'reject')
+  yield fork(fetchRankingWatcher, 'change page')
+  yield fork(fetchRankingWatcher, 'update contents')
 }
 
 export default saga
