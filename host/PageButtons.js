@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/RaisedButton'
 import { Step, Stepper, StepButton } from 'material-ui/Stepper'
 
-import { submitPage, nextPage } from './actions'
+import { submitPage, nextPage, previousPage } from './actions'
 
 import { getPage } from 'util/index'
 
@@ -14,25 +14,24 @@ const mapStateToProps = ({ page }) => ({
   page
 })
 
+const actionCreators = {
+  nextPage, previousPage, submitPage
+}
+
 class PageButtons extends Component {
   changePage(page) {
     const { dispatch } = this.props
     dispatch(submitPage(page))
   }
 
-  nextPage(page) {
-    const { dispatch } = this.props
-    dispatch(nextPage())
-  }
-
   render() {
-    const { page } = this.props
+    const { page, nextPage, previousPage, submitPage } = this.props
     const buttons = []
     for (let i = 0; i < pages.length; i ++) {
       buttons[i] = (
         <Step key={i}>
           <StepButton
-            onClick={this.changePage.bind(this, pages[i])}
+            onClick={() => submitPage(pages[i])}
           >{getPage(pages[i])}</StepButton>
         </Step>
       )
@@ -42,10 +41,11 @@ class PageButtons extends Component {
         <Stepper activeStep={pages.indexOf(page)} linear={false}>
           {buttons}
         </Stepper>
-        <RaisedButton onClick={this.nextPage.bind(this)} primary={true} style={{ marginLeft: '3%' }}>次へ</RaisedButton>
+        <RaisedButton onClick={previousPage} style={{ marginLeft: '3%' }} disabled={pages.indexOf(page) == 0}>戻る</RaisedButton>
+        <RaisedButton onClick={nextPage} primary={true} style={{ marginLeft: '3%' }}>次へ</RaisedButton>
       </span>
     )
   }
 }
 
-export default connect(mapStateToProps)(PageButtons)
+export default connect(mapStateToProps, actionCreators)(PageButtons)

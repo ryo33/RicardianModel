@@ -1,6 +1,8 @@
 import { put, take, call, select, fork } from 'redux-saga/effects'
 
-import { fetchContents, match, nextPage, submitPage, changePage } from './actions'
+import { fetchContents, match, nextPage, previousPage, submitPage, changePage } from './actions'
+
+const pages = ["description", "experiment", "result", "waiting"]
 
 function* changePageSaga() {
   while (true) {
@@ -14,7 +16,6 @@ function* changePageSaga() {
 }
 
 function* nextPageSaga() {
-  const pages = ["description", "experiment", "result", "waiting"]
   while (true) {
     yield take(`${nextPage}`)
     const page = yield select(({ page }) => page)
@@ -26,6 +27,21 @@ function* nextPageSaga() {
       }
     }
     yield put(submitPage(next))
+  }
+}
+
+function* previousPageSaga() {
+  while (true) {
+    yield take(`${previousPage}`)
+    const page = yield select(({ page }) => page)
+    let previous = pages[0]
+    for (let i = 0; i < pages.length; i ++) {
+      if (page == pages[i]) {
+        previous = pages[(i - 1 + pages.length) % pages.length]
+        break
+      }
+    }
+    yield put(submitPage(previous))
   }
 }
 
@@ -46,6 +62,7 @@ function* matchSaga() {
 function* saga() {
   yield fork(changePageSaga)
   yield fork(nextPageSaga)
+  yield fork(previousPageSaga)
   yield fork(fetchContentsSaga)
   yield fork(matchSaga)
 }

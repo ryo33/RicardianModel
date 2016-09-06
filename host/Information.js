@@ -10,9 +10,19 @@ const mapStateToProps = ({ participants, groups }) => ({
   participants, groups
 })
 
-const Expandable = ({title, children, initiallyExpanded=null}) => (
+const styles = {
+  users: {
+    marginTop: "2%",
+  },
+  groups: {
+    marginTop: "2%",
+  }
+}
+
+const Expandable = ({style, title, children, initiallyExpanded=null}) => (
   <Card
     initiallyExpanded={initiallyExpanded}
+    style={style}
   >
     <CardHeader
       title={title}
@@ -68,7 +78,8 @@ const Groups = ({ groups }) => (
 const Information = ({ groups, participants, openParticipantPage }) => (
   <div>
     <Expandable
-      title={"Users (" + Object.keys(participants).length + "人)"}
+      title={"参加者数 (" + Object.keys(participants).length + "人)"}
+      style={styles.users}
     >
       <Users
         participants={participants}
@@ -76,7 +87,8 @@ const Information = ({ groups, participants, openParticipantPage }) => (
       />
     </Expandable>
     <Expandable
-      title={"Groups (" + Object.keys(groups).length + ")"}
+      title={"グループ数 (" + Object.keys(groups).length + ")"}
+      style={styles.groups}
     >
       <Groups groups={groups} />
     </Expandable>
