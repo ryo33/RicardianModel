@@ -24,6 +24,7 @@ defmodule RicardianModel.Main do
   def new_participant do
     %{
       group: nil,
+      joined: 1,
       money: 0,
       g1rate: 0,
       g2rate: 0
@@ -44,7 +45,7 @@ defmodule RicardianModel.Main do
 
   def join(data, id) do
     unless Map.has_key?(data.participants, id) do
-      new = new_participant()
+      new = new_participant() |> Map.put(:joined, Map.size(data.participants) + 1)
       put_in(data, [:participants, id], new)
       |> Actions.join(id, new_participant())
     else

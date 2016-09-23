@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import RaisedButton from 'material-ui/RaisedButton'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ActionCached from 'material-ui/svg-icons/action/cached'
 
 import { match } from './actions'
 
@@ -14,12 +15,10 @@ class MatchingButton extends Component {
   render() {
     const { style } = this.props
     return (
-      <RaisedButton
-        onClick={this.handleClick.bind(this)}
+      <FloatingActionButton
         style={style}
-      >
-        再マッチング
-      </RaisedButton>
+        onClick={this.handleClick.bind(this)}
+      ><ActionCached /></FloatingActionButton>
     )
   }
 }

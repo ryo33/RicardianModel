@@ -6,6 +6,7 @@ import { changePage, changeGoods } from './actions'
 const reducer = concatenateReducers([
   handleActions({
     'update contents': (_, { payload }) => payload,
+    'joined': (_, { payload }) => ({ joined: payload }),
     'update ranking': (_, { payload }) => ({ ranking: payload }),
     'change page': (_, { payload }) => ({ page: payload }),
     'matched': (_, { payload }) => payload,

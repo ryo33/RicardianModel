@@ -93,7 +93,8 @@ defmodule RicardianModel.Actions do
 
   def join(data, id, participant) do
     action = get_action("join", %{id: id, user: participant})
-    format(data, action)
+    paction = get_action("joined", Map.size(data.participants))
+    format(data, action, dispatch_to_all(data, paction))
   end
 
   def matched(data) do

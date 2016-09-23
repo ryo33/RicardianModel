@@ -1,24 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
+import Waiting from './Waiting'
+import Description from './Description'
 import Experiment from './Experiment'
 import Result from './Result'
 
 const mapStateToProps = ({ page }) => ({
   page
 })
-
-const Waiting = () => (
-  <div>
-    <p>待機画面</p>
-  </div>
-)
-
-const Description = () => (
-  <div>
-    <p>説明画面</p>
-  </div>
-)
 
 const Pages = ({ page }) => {
   switch (page) {

@@ -8,6 +8,8 @@ import PageButtons from './PageButtons'
 import MatchingButton from './MatchingButton'
 import Information from './Information'
 
+import Divider from 'material-ui/Divider'
+
 const mapStateToProps = ({ loading }) => ({
   loading
 })
@@ -15,12 +17,6 @@ const mapStateToProps = ({ loading }) => ({
 const mapDispatchToProps = (dispatch) => ({
   fetchContents: bindActionCreators(fetchContents, dispatch)
 })
-
-const styles = {
-  matchingButton: {
-    float: "right"
-  }
-}
 
 class App extends Component {
   constructor(props, context) {
@@ -40,8 +36,14 @@ class App extends Component {
     } else {
       return <div>
         <PageButtons />
-        <MatchingButton style={styles.matchingButton}/>
-        <Information />
+        <Divider
+           style={{
+            marginTop: "5%",
+            marginBottom: "5%"
+          }}
+         />
+        <Information /><br />
+        <MatchingButton />
       </div>
     }
   }

@@ -37,7 +37,8 @@ defmodule RicardianModel.Host do
           group: group_id,
           money: money,
           g1rate: g1rate,
-          g2rate: g2rate
+          g2rate: g2rate,
+          joined: Map.size(data.participants)
         }
       end
       participants = participants
