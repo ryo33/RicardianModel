@@ -6,12 +6,13 @@ import { fetchContents } from './actions'
 
 import PageButtons from './PageButtons'
 import MatchingButton from './MatchingButton'
+import DownloadButton from './DownloadButton'
 import Information from './Information'
 
 import Divider from 'material-ui/Divider'
 
-const mapStateToProps = ({ loading }) => ({
-  loading
+const mapStateToProps = ({ loading, participants, groups, page }) => ({
+  loading, participants, groups, page
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -30,7 +31,7 @@ class App extends Component {
   }
 
   render() {
-    const { loading } = this.props
+    const { loading, participants, groups, page } = this.props
     if (loading) {
       return <p>ロード中です</p>
     } else {
@@ -44,6 +45,20 @@ class App extends Component {
          />
         <Information /><br />
         <MatchingButton />
+        <DownloadButton
+          fileName={"ricardian_model.csv"}
+          list={[
+            ["リカーディアンモデル"],
+            ["実験日", new Date()],
+            ["登録者数", Object.keys(participants).length],
+            ["グループ数", Object.keys(groups).length],
+            ["ID", "利得"],
+          ].concat(
+            Object.keys(participants).map(id => [id, participants[id].money])
+          )}
+          style={{marginLeft: '2%'}}
+          disabled={page != "result"}
+        />
       </div>
     }
   }
