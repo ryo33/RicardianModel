@@ -103,4 +103,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(throttle(Information, 50))
+export default connect(mapStateToProps, mapDispatchToProps)(throttle(Information, 200))
