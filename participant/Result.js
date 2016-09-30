@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 const mapStateToProps = ({ ranking }) => {
-  ranking.sort(({money: p1}, {money: p2}) => p1 - p2)
+  ranking.sort(({money: p1}, {money: p2}) => p2 - p1)
   return { ranking }
 }
 
